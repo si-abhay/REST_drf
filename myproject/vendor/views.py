@@ -43,7 +43,12 @@ def vendor_detail(request, vendor_id):
 @api_view(['GET', 'POST'])
 def purchase_order_list_create(request):
     if request.method == 'GET':
-        purchase_orders = PurchaseOrder.objects.all()
+        vendor_id = request.query_params.get('vendor_id')
+        if vendor_id:
+            purchase_orders = PurchaseOrder.objects.filter(vendor__id=vendor_id)
+        else:
+            purchase_orders = PurchaseOrder.objects.all()
+
         serializer = PurchaseOrderSerializer(purchase_orders, many=True)
         return Response(serializer.data)
 
@@ -53,6 +58,7 @@ def purchase_order_list_create(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def purchase_order_detail(request, po_id):
