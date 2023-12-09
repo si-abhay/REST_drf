@@ -5,7 +5,7 @@ from .views import (
     purchase_order_list_create,
     purchase_order_detail,
     vendor_performance,
-    acknowledge_purchase_order
+    acknowledge_purchase_order,
 )
 
 urlpatterns = [

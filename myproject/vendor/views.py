@@ -88,12 +88,13 @@ def vendor_performance(request, vendor_id):
 @api_view(['POST'])
 def acknowledge_purchase_order(request, po_id):
     purchase_order = get_object_or_404(PurchaseOrder, pk=po_id)
-    
+
     if request.method == 'POST':
         serializer = PurchaseOrderSerializer(purchase_order, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            # Trigger recalculation logic for average_response_time
-            # You may implement the logic here or dispatch a task to a background job queue
+            vendor = purchase_order.vendor
+            vendor.update_average_response_time()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
